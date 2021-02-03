@@ -9,10 +9,9 @@ input_file = sys.argv[-1]
 for ind, arg in enumerate(sys.argv):
     if arg == '--min_length':
         try:
-            sys.argv[ind + 1].isdigit() == True
-            if int(sys.argv[ind + 1]) > 0:
-                min_length = int(sys.argv[ind + 1])
-            else:
+            min_length = int(sys.argv[ind + 1])
+            if int(sys.argv[ind + 1]) < 0:
+                min_length = 0
                 print('Minimal length value must be greater than zero')
         except ValueError:
             print('Please, provide a value for minimal length')
@@ -20,15 +19,16 @@ for ind, arg in enumerate(sys.argv):
         keep_filtered = True
     elif arg == '--gc_bounds':
         try:
-            sys.argv[ind + 1].isdigit() == True
-            if 0 < int(sys.argv[ind + 1]) < 100:
-                gc_bounds[0] = int(sys.argv[ind + 1])
+            gc_bounds[0] = int(sys.argv[ind + 1])
+            if 0 < gc_bounds[0] < 100:
                 if sys.argv[ind + 2].isdigit():
-                    if int(sys.argv[ind + 2]) < 100:
+                    if gc_bounds[0] < int(sys.argv[ind + 2]) < 100:
                         gc_bounds[1] = int(sys.argv[ind + 2])
                     else:
-                        print('Value of the upper bound of GC content must be less than 100')
+                        gc_bounds[1] = 100
+                        print('Value of the upper bound of GC content must be between lower bound and 100')
             else:
+                gc_bounds[0] = 0
                 print('Value of the lower bound of GC content must be between 0 and 100')
         except ValueError:
             print('Please, provide at least one value for GC content')
@@ -36,15 +36,7 @@ for ind, arg in enumerate(sys.argv):
         output_base_name = sys.argv[ind + 1]
 
 if output_base_name is None:
-    output_base_name = input_file[:-6]
-
-if gc_bounds[0] > gc_bounds[1]:
-    gc_bounds = [0, 100]
-    print(
-        'Value of the lower bound of GC content must be below the upper bound value. \nGC content bounds will be set to 0-100')
-
-print(min_length)
-print(gc_bounds)
+    output_base_name = input_file[:-len(".fastq")]
 
 
 # fastq_filter programm
