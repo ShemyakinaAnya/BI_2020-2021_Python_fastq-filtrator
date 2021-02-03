@@ -55,41 +55,27 @@ def check_read_gc(gc_bound_min, gc_bound_max, seq_read):
     GC_content = int(GC_counts / len(seq_read) * 100)
 
     if gc_bound_max is None:
-        return True if GC_content >= gc_bound_min else False
+        return GC_content >= gc_bound_min
     else:
-        return True if gc_bound_min <= GC_content and GC_content <= gc_bound_max else False
+        return gc_bound_min <= GC_content <= gc_bound_max
 
+output_file_passed_name = output_base_name + '__passed.fastq'
+output_file_failed_name = output_base_name + '__failed.fastq'
 
-# min_length = 0
-# gc_bounds = [1, None]
-# keep_filtered = False
-# output_base_name = 'filtered_file'
-# input_file = 'C:/Users/Кристина/PycharmProjects/pythonProject/tester.fastq'
+with open(input_file) as fastq_file, open(output_file_passed_name, 'w') as p, open(output_file_failed_name, 'w') as f:
 
-output_file_passed_name = output_base_name + '_passed.fastq'
-output_file_failed_name = output_base_name + '_failed.fastq'
-
-with open(input_file) as fastq_file:
-    p = open(output_file_passed_name, 'w')
-    f = open(output_file_failed_name, 'w')
-    line_count = 0
-    for line in fastq_file:
-        line_count += 1
-    fastq_file.seek(0)  # вернулась к началу файла
-
-    for i in range(int(line_count / 4)):
         string_1 = fastq_file.readline()
-        string_2 = fastq_file.readline()
-        string_3 = fastq_file.readline()
-        string_4 = fastq_file.readline()
-        read = string_1 + string_2 + string_3 + string_4
+        while string_1:
+            string_2 = fastq_file.readline()
+            string_3 = fastq_file.readline()
+            string_4 = fastq_file.readline()
+            read = string_1 + string_2 + string_3 + string_4
 
-        read_is_good = check_read_length(min_length, string_2) and check_read_gc(gc_bounds[0], gc_bounds[1], string_2)
-        if read_is_good:
-            p.write(read)
-        else:
-            if keep_filtered == True:
-                f.write(read)
+            read_is_good = check_read_length(min_length, string_2) and check_read_gc(gc_bounds[0], gc_bounds[1], string_2)
+            if read_is_good:
+                p.write(read)
+            else:
+                if keep_filtered:
+                    f.write(read)
 
-    p.close()
-    f.close()
+            string_1 = fastq_file.readline()
