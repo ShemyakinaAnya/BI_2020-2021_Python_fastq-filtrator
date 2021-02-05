@@ -7,7 +7,21 @@ keep_filtered = False
 gc_bounds = [0, 100]
 output_base_name = None
 input_file = sys.argv[-1]
-help_note = False
+call_help = False
+help_note = 'Filter of sequences in FASTQ format with thresholds for sequence length and its GC content\n\nThe' \
+            ' options for the tool are as follows:\n\n--min_length\t\tProvide a positive integer specifying the lower' \
+            ' threshold for filtering reads\n\t\t\tby length. Default minimal length is 0 if not specified.\n\n' \
+            '--gc_bounds\t\tProvide one or two positive integers between 0 and 100 specifying lower or lower and' \
+            '\n\t\t\tupper bounds for filtering reads by GC content percent. If not specified the default\n\t\t\t' \
+            'values are set as 0 and 100, correspondingly.\n\n--keep_filtered\t\tIf this flag is present then the' \
+            ' reads that failed filtration will be collected\n\t\t\tin separate output file.\n\n--output_base_name\t' \
+            'Provide a base name (filename without extension) for output files. If not specified\n\t\t\tthe default' \
+            ' base name will be set as non-extension part of the input filename.\n\t\t\tThe name of output file with' \
+            ' filtered reads will consist of base name, ‘__passed’\n\t\t\tsuffix and format extension (‘.fastq’). ' \
+            'If --keep_filtered is set, the second output\n\t\t\tfile name will consist of base name, ‘__failed’ ' \
+            'suffix and format extension.\n\npath to FASTQ file\tA required positional argument, providing path to' \
+            ' the input file;\n\t\t\tshould be entered as the last one.\n\n--help\t\t\tPrints this help note and' \
+            ' exits.\n\nAll options except the path to input file are optional'
 
 for ind, arg in enumerate(sys.argv):
     if arg == '--min_length':
@@ -38,9 +52,9 @@ for ind, arg in enumerate(sys.argv):
     elif arg == '--output_base_name':
         output_base_name = sys.argv[ind + 1]
     elif arg == '--help':
-        help_note = True
+        call_help = True
 
-if not help_note:
+if not call_help:
 
     if output_base_name is None:
         output_base_name = input_file[:-len(".fastq")]
@@ -93,22 +107,4 @@ if not help_note:
         if keep_filtered:
             f.close()
 else:
-    print('Filter of sequences in FASTQ format with thresholds for sequence length and its GC content\n')
-    print('The options for the tool are as follows:\n')
-    print('--min_length\t\tProvide a positive integer specifying the lower threshold for filtering reads\n\t\t\tby '
-          'length. Default minimal length is 0 if not specified.\n')
-    print('--gc_bounds\t\tProvide one or two positive integers between 0 and 100 specifying lower or lower and\n\t\t\t'
-          'upper bounds for filtering treads by GC content percent. If not specified the default\n\t\t\tvalues are set'
-          ' as 0 and 100, correspondingly.\n')
-    print('--keep_filtered\t\tIf this flag is present then the reads that failed filtration will be collected\n\t\t\tin'
-          ' separate output file.\n')
-    print('--output_base_name\tProvide a base name (filename without extension) for output files. If not specified\n\t'
-          '\t\tthe default base name will be set as non-extension part of the input filename.\n\t\t\tThe name of output'
-          ' file with filtered reads will consist of base name, ‘__passed’\n\t\t\tsuffix and format extension '
-          '(‘.fastq’). If --keep_filtered is set, the second output\n\t\t\tfile name will consist of base name, '
-          '‘__failed’ suffix and format extension.\n')
-    print('path to FASTQ file\tA required positional argument, providing path to the input file;\n\t\t\tshould be '
-          'entered as the last one.\n')
-    print('--help\t\t\tPrints this help note and exits.\n')
-    print('All options except the path to input file are optional')
-
+    print(help_note)
