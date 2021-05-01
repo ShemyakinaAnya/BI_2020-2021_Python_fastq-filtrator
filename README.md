@@ -32,3 +32,28 @@ path to FASTQ file      A required positional argument, providing path to the
 
 All options except the path to input file are optional
 
+
+
+
+To start filter run fastq_filter.py
+(uses parser_functions.py and filter_functions.py as dependencies)
+
+
+Unit tests for parser_functions.py:
+
+Test_call_help_parsing.py
+Test_keep_filtered_parsing.py
+Test_gc_bounds_parsing.py
+Test_min_length_parsing.py
+Test_input_and_output_names_parsing.py
+
+Unit tests for filter_functions.py:
+
+Test_read_length_checking.py
+Test_read_gc_content_checking.py
+Test_output_files_content.py
+
+Unit test for fastq_filter.py
+
+Test_fastq_filter.py
+* edit absolute paths in script before runing
